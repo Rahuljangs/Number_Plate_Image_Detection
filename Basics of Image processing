@@ -1,0 +1,38 @@
+import cv2
+from numpy import asarray
+
+#Reading image
+img = cv2.imread('Image directory')
+
+#Resizing the image into width=300, height=200
+Resized_Image = cv2.resize(img,(300,200), interpolation = cv2.INTER_AREA)
+
+#Resizing the image which is multiplied with the scaling factor to keep the original aspect ratio
+
+#Image normalization - reducing the pixels of the image from 0-255 to 0-1
+pixels=asarray(img)
+pixels=pixels.astype('floast32')
+pixels=pixels/255
+
+#Image flipping - Flipping the image vertically
+Flipped_Image=cv2.flip(img, 0)
+
+#Image Cropping
+Cropped_Image = img[80:280, 150:330]
+
+#Image Coversion from RGB to BGR
+C_Image=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+
+#Image Mean Subtraction
+Sub = cv2.subtract(img,img2)
+Mean = cv2.mean(Sub)
+
+#Image Reshaping -  Image reshaping is used to change the shape and/or the number of channels of a 2D matrix without copying the data
+
+#Image conversion to Float
+img=img.astypep(float)
+
+#Dimensionality Reduction - Changing img to GRAY scale
+Gray_Image=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+#Data Augmentation -  Data Augmentation is a technique used for expanding the artificial size of training data by creating modified data from existing ones. Data Augmentation is also good for enhancing the model's performance. Data Augmentation helps to improve model accuracy and prevent model overfitting
