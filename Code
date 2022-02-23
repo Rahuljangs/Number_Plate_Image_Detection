@@ -1,0 +1,41 @@
+import cv2
+import pytesseract
+import string
+import easyocr
+from easyocr import Reader
+import glob
+import pandas as pd
+import csv                               
+import matplotlib.pyplot as plt
+
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+plateCascade = cv2.CascadeClassifier("D:\hack\haarcascade_russian_plate_number.xml")       #reads the .xml file to refer image classification
+minArea = 500                                                                              #default minimum area
+number_plate_data = ''
+reader = easyocr.Reader(['en'])
+path = glob.glob("D:\hack\images\*.jpg")                                   #reading images present inside folder of type jpg
+for temp in path:                                                          #traversing each image
+        img = cv2.imread(temp)                                             #storing temp image in img
+        imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)                    #storing grayscale of the image
+        numberPlates = plateCascade.detectMultiScale(imgGray, 1.1, 4)      #selecting a range of grayscale values to detect the rectangle portion of number plate
+        for (x, y, w, h) in numberPlates:                                  #iterating cordinates, width, and height
+            area = w * h                                                   #finding area of the number plate
+            if area > minArea:                                             #if the area is greater than minimum area
+                img_cropped = imgGray[y:y + h, x:x + w]                    #cropping it specifically
+                break
+
+        ret, bw_img = cv2.threshold(img_cropped, 127, 255, cv2.THRESH_BINARY)                #Converting into binary 
+
+        bw = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)                        
+
+
+        test = reader.readtext(bw_img)
+
+        cv2.rectangle(img, ([x, y]), ([x + w, y + h]), (0, 255, 0), 1)                                                  #adds an rectangle on the number plate
+        cv2.putText(img, test[0][-2], (x,y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv2.LINE_AA, False)           #adds number plate string on the rectangle
+        cv2.imshow("rectangle", img)
+        cv2.imshow("cropped image", img_cropped)
+        cv2.imshow("number plate", bw_img)
+        print(pytesseract.image_to_string(bw_img))
+        cv2.waitKey(0)
